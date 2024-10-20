@@ -1,0 +1,94 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-10-06T02:22:16.834Z",
+      "email": "artur@mail.ru",
+      "phone": null,
+      "city": null,
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 1,
+      "payment_amount": 100,
+      "payment_date": "2022-01-01",
+      "payment_method": "наличные"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 1,
+      "payment_amount": 100,
+      "payment_date": "2022-01-01",
+      "payment_method": "наличные"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 2,
+      "payment_amount": 50,
+      "payment_date": "2022-10-01",
+      "payment_method": "перевод"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 4,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 1,
+      "payment_amount": 100,
+      "payment_date": "2022-01-01",
+      "payment_method": "наличные"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 6,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 1,
+      "payment_amount": 100,
+      "payment_date": "2022-01-01",
+      "payment_method": "наличные"
+    }
+  },
+  {
+    "model": "users.payment",
+    "pk": 7,
+    "fields": {
+      "user": 1,
+      "course": 2,
+      "lesson": 2,
+      "payment_amount": 50,
+      "payment_date": "2022-10-01",
+      "payment_method": "перевод"
+    }
+  }
+]
