@@ -1,5 +1,4 @@
 from django.db import models
-
 from config.settings import AUTH_USER_MODEL
 
 
@@ -33,3 +32,11 @@ class Lesson(models.Model):
     def __str__(self):
         return self.title
 
+
+class Subscription(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='пользователь')
+
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
