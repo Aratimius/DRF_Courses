@@ -81,10 +81,12 @@ class LessonDestroyAPIView(DestroyAPIView):
 
 
 class SubscriptionCreateAPIView(CreateAPIView):
+    """Эндпоинт на создание и удаление подписки"""
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
 
     def post(self, request, *args, **kwargs):
+        """Реализация создания и удаления подписки через метод post"""
         user = self.request.user
         # id курса, которое передал пользователь
         course_id = self.request.data.get('course')
