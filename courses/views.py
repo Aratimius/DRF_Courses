@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -11,11 +13,25 @@ from users.permissions import IsModer, IsOwner
 
 
 #  Описываем ViewSet для Курсов:
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    operation_description="Просмотр списка курсов"
+))
+@method_decorator(name='create', decorator=swagger_auto_schema(
+    operation_description="Создание курса"
+))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    operation_description="Просмотр курса"
+))
+@method_decorator(name='destroy', decorator=swagger_auto_schema(
+    operation_description="Удаление курса"
+))
+@method_decorator(name='update', decorator=swagger_auto_schema(
+    operation_description="Обновление курса"
+))
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = CustomPagination
-
 
     def get_serializer_class(self):
         """ Выбор сериализатора """
@@ -28,21 +44,15 @@ class CourseViewSet(ModelViewSet):
         course.user = self.request.user
         course.save()
 
-    # def get_permissions(self):
-    #     if self.action == 'create':
-    #         self.permission_classes = (~IsModer,)
-    #     elif self.action in ['list', 'update', 'retrieve']:
-    #         self.permission_classes = (IsModer | IsOwner,)
-    #     elif self.action == 'destroy':
-    #         self.permission_classes = (IsOwner,)
-    #     return super().get_permissions()
-
 
 #  Описываем Generic-классы для Уроков:
+@method_decorator(name='post', decorator=swagger_auto_schema(
+    operation_description="Создание урока"
+))
 class LessonCreateAPIView(CreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    # permission_classes = [IsAuthenticated, ~IsModer]
+    permission_classes = [IsAuthenticated, ~IsModer]
 
     def perform_create(self, serializer):
         lesson = serializer.save()
@@ -50,23 +60,35 @@ class LessonCreateAPIView(CreateAPIView):
         lesson.save()
 
 
+@method_decorator(name='get', decorator=swagger_auto_schema(
+    operation_description="Список уроков"
+))
 class LessonListAPIView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     pagination_class = CustomPagination
-    # permission_classes = [IsAuthenticated, IsModer | IsOwner]
+    permission_classes = [IsAuthenticated, IsModer | IsOwner]
 
 
+@method_decorator(name='get', decorator=swagger_auto_schema(
+    operation_description="Просмотр одного урока"
+))
 class LessonRetrieveAPIView(RetrieveAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    # permission_classes = [IsAuthenticated, IsModer | IsOwner]
+    permission_classes = [IsAuthenticated, IsModer | IsOwner]
 
 
+@method_decorator(name='patch', decorator=swagger_auto_schema(
+    operation_description="Изменение урока"
+))
+@method_decorator(name='put', decorator=swagger_auto_schema(
+    operation_description="Изменение урока"
+))
 class LessonUpdateAPIView(UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    # permission_classes = [IsAuthenticated, IsModer | IsOwner]
+    permission_classes = [IsAuthenticated, IsModer | IsOwner]
 
     def perform_update(self, serializer):
         lesson = serializer.save()
@@ -74,10 +96,13 @@ class LessonUpdateAPIView(UpdateAPIView):
         lesson.save()
 
 
+@method_decorator(name='delete', decorator=swagger_auto_schema(
+    operation_description="Удаление урока"
+))
 class LessonDestroyAPIView(DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    # permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner]
 
 
 class SubscriptionCreateAPIView(CreateAPIView):
@@ -88,13 +113,12 @@ class SubscriptionCreateAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         """Реализация создания и удаления подписки через метод post"""
         user = self.request.user
-        # id курса, которое передал пользователь
+        # id курса, котороый запросил пользователь
         course_id = self.request.data.get('course')
         # сущность курса, все данные по курсу, который запросил пользователь
         course_item = get_object_or_404(Course, pk=course_id)
         # queryset на сущность подписки фильтр по вошедшему пользователю и курсу
         subs_item = Subscription.objects.filter(course=course_item, user=user)
-
 
         if subs_item.exists(): #  если такая подписка существует то удаляем
             subs_item.delete()
