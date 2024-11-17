@@ -31,6 +31,7 @@ class Payment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='курс')
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='урок')
 
+    product = models.CharField(max_length=250, blank=True, null=True)
     payment_amount = models.PositiveIntegerField(verbose_name='сумма оплаты')
     payment_date = models.DateTimeField(default=datetime.now, verbose_name='дата оплаты')
     payment_method = models.CharField(max_length=100, blank=True, null=True,

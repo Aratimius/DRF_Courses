@@ -8,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from users.models import User, Payment
 from users.serializers import UserSerializer, PaymentSerializer
-from users.services import create_price, create_stripe_session
+from users.services import create_price, create_stripe_session, create_product
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
@@ -66,7 +66,12 @@ class PaymentCreateAPIView(CreateAPIView):
         #  Создаем цену на основе стоимости и курса, которые указал пользователь
         #  Вообще нужно в модели курса и урока создать цену, потом ее просто передавать в create_price, по идее
         #  Но будем считать, что пользователь сам устанавливает цену за курс, хотя это тупо
-        price = create_price(amount, course)
+
+        # продукт
+        payment.product = create_product(course)
+        # цена
+        price = create_price(amount, payment.product)
+        # сессия
         session_id, payment_link = create_stripe_session(price)
         payment.session_id = session_id
         payment.link = payment_link

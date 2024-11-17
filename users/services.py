@@ -5,12 +5,16 @@ from config.settings import STRIPE_API_KEY
 stripe.api_key = STRIPE_API_KEY
 
 
-def create_price(amount, product):
-    """Создает сначала продукт, потом цену"""
-    #  Создаем продукт:
-    product = stripe.Product.create(name=product.title)
+def create_product(product):
+    """Создаем продукт"""
 
-    #  Создаем цену:
+    product = stripe.Product.create(name=product.title)
+    return product
+
+
+def create_price(amount, product):
+    """Создает цену для продукта"""
+
     price = stripe.Price.create(
         currency="rub",
         unit_amount=amount * 100,
