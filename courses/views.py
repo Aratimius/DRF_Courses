@@ -113,7 +113,7 @@ class SubscriptionCreateAPIView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         """Реализация создания и удаления подписки через метод post"""
         user = self.request.user
-        # id курса, котороый запросил пользователь
+        # id курса, который запросил пользователь
         course_id = self.request.data.get('course')
         # сущность курса, все данные по курсу, который запросил пользователь
         course_item = get_object_or_404(Course, pk=course_id)

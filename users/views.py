@@ -68,11 +68,12 @@ class PaymentCreateAPIView(CreateAPIView):
         #  Но будем считать, что пользователь сам устанавливает цену за курс, хотя это тупо
 
         # продукт
-        payment.product = create_product(course)
+        product = create_product(course)
         # цена
-        price = create_price(amount, payment.product)
+        price = create_price(amount, course)
         # сессия
         session_id, payment_link = create_stripe_session(price)
         payment.session_id = session_id
         payment.link = payment_link
+        payment.product = product['name']
         payment.save()
