@@ -9,6 +9,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView,
 from courses.models import Course, Lesson, Subscription
 from courses.paginations import CustomPagination
 from courses.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, SubscriptionSerializer
+from courses.tasks import send_notification
 from users.permissions import IsModer, IsOwner
 
 
@@ -44,6 +45,15 @@ class CourseViewSet(ModelViewSet):
         course.user = self.request.user
         course.save()
 
+    def perform_update(self, serializer):
+        course = serializer.save()
+        # отправить сообщение об обновлении курса подписанному пользователю:
+        for subscription in Subscription.objects.filter(course=course.pk):
+            email = subscription.user.email
+            message = f'Данные по курсу "{subscription.course.title}" были обновлены'
+            send_notification.delay(email, message)
+        course.save()
+
 
 #  Описываем Generic-классы для Уроков:
 @method_decorator(name='post', decorator=swagger_auto_schema(
@@ -57,6 +67,11 @@ class LessonCreateAPIView(CreateAPIView):
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.user = self.request.user
+        # отправить сообщение о создании урока подписанному пользователю:
+        for subscription in Subscription.objects.filter(course=lesson.courses.pk):
+            email = subscription.user.email
+            message = f'В курсе "{subscription.course.title}" появился новый урок'
+            send_notification.delay(email, message)
         lesson.save()
 
 
@@ -93,6 +108,11 @@ class LessonUpdateAPIView(UpdateAPIView):
     def perform_update(self, serializer):
         lesson = serializer.save()
         lesson.user = self.request.user
+        # отправить сообщение об обновлении урока подписанному пользователю:
+        for subscription in Subscription.objects.filter(course=lesson.courses.pk):
+            email = subscription.user.email
+            message = f'В курсе "{subscription.course.title}" обновился урок "{lesson.title}"'
+            send_notification.delay(email, message)
         lesson.save()
 
 

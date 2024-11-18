@@ -1,14 +1,19 @@
+from datetime import datetime
+
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters
+from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import User, Payment
-from users.serializers import UserSerializer, PaymentSerializer
+from users.serializers import UserSerializer, PaymentSerializer, CustomTokenPairSerializer
 from users.services import create_price, create_stripe_session, create_product
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
@@ -30,6 +35,18 @@ class UserViewSet(ModelViewSet):
     """CRUD для пользователя"""
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    # @action(detail=False, methods=('post',))
+    # def last_login(self, request, pk):
+    #     user = get_object_or_404(User, pk=pk)
+    #     user.last_login = datetime.now()
+    #     print(user.last_login)
+    #     user.save()
+
+
+class CustomTokenPairView(TokenObtainPairView):
+    """Расширение класса TokenObtainPairView"""
+    serializer_class = CustomTokenPairSerializer
 
 
 class UserCreateAPIView(CreateAPIView):
