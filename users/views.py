@@ -70,7 +70,7 @@ class PaymentCreateAPIView(CreateAPIView):
         # продукт
         product = create_product(course)
         # цена
-        price = create_price(amount, course)
+        price = create_price(amount, product)
         # сессия
         session_id, payment_link = create_stripe_session(price)
         payment.session_id = session_id

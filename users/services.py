@@ -14,7 +14,6 @@ def create_product(product):
 
 def create_price(amount, product):
     """Создает цену для продукта"""
-    product = stripe.Product.create(name=product.title)
     price = stripe.Price.create(
         currency="rub",
         unit_amount=amount * 100,
